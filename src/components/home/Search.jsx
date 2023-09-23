@@ -12,6 +12,8 @@ import {
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../context/AuthContext";
 import { db } from "../../firebase";
+import { ChatContext } from "../../context/ChatContext";
+import { CHANGE_USER } from "../../constants/ActionTypes";
 
 export const Search = () => {
   const [username, setUsername] = useState("");
@@ -19,6 +21,7 @@ export const Search = () => {
   const [err, setErr] = useState("");
   const [notFound, setNotFound] = useState("");
   const { currentUser } = useContext(AuthContext);
+  const { dispatch } = useContext(ChatContext);
 
   const handleKey = (e) => {
     e.code === "Enter" && handleSearch();
@@ -71,6 +74,7 @@ export const Search = () => {
           [combinedId + ".date"]: serverTimestamp(),
         });
       }
+      dispatch({ type: CHANGE_USER, payload: user });
     } catch (err) {
       setErr(err);
     }

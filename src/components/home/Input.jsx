@@ -12,7 +12,11 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { v4 as uuid } from "uuid";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import {
+  getDownloadURL,
+  ref,
+  uploadBytes,
+} from "firebase/storage";
 
 export const Input = () => {
   const [text, setText] = useState("");
@@ -25,29 +29,22 @@ export const Input = () => {
     if (img) {
       const storageRef = ref(storage, uuid());
 
-      const uploadTask = uploadBytesResumable(storageRef, img);
-      uploadTask.on(
-        (error) => {
-          // setErr(true);
-        },
-        () => {
-          // Handle successful uploads on complete
-          // For instance, get the download URL: https://firebasestorage.googleapis.com/...
-          getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-            const chatsRef = doc(db, "chats", data.chatId);
-            // Atomically add a new message to the "messages" array field.
-            await updateDoc(chatsRef, {
-              messages: arrayUnion({
-                id: uuid(),
-                text,
-                senderId: currentUser.uid,
-                date: Timestamp.now(),
-                img: downloadURL,
-              }),
-            });
+      uploadBytes(storageRef, img).then((snapshot) => {
+        getDownloadURL(snapshot.ref).then(async (url) => {
+          console.log(url);
+          const chatsRef = doc(db, "chats", data.chatId);
+          // Atomically add a new message to the "messages" array field.
+          await updateDoc(chatsRef, {
+            messages: arrayUnion({
+              id: uuid(),
+              text,
+              senderId: currentUser.uid,
+              date: Timestamp.now(),
+              img: url,
+            }),
           });
-        }
-      );
+        });
+      });
     } else {
       const chatsRef = doc(db, "chats", data.chatId);
       // Atomically add a new message to the "messages" array field.
