@@ -8,7 +8,7 @@ export const Navbar = () => {
 
   return (
     <div className="navbar">
-      <span className="logo">Maddy Chat App</span>
+      <span className="logo">PingPals</span>
       <div className="user">
         <img src={currentUser.photoURL} alt="Profile" />
         <span>{currentUser.displayName}</span>
