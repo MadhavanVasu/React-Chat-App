@@ -29,7 +29,7 @@ export const Login = () => {
   return (
     <div className="form-container">
       <div className="form-wrapper">
-        <span className="logo">Maddy's Chat App</span>
+        <span className="logo">PingPals</span>
         <span className="title">Login</span>
         <form onSubmit={(e) => handleSubmit(e)}>
           <input type="email" placeholder="email" />
